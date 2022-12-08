@@ -201,12 +201,12 @@ class Best2pay_PaymentSystemDriver extends AMI_PaymentSystemDriver {
 					throw new Exception("Non valid XML was received");
 
 				$tmp_response = (array)$response;
-				unset($tmp_response["signature"]);
+				unset($tmp_response['signature'], $tmp_response['ofd_state']);
 				$signature = base64_encode(md5(implode('', $tmp_response) . $aData['b2p_password']));
 				if ($signature !== $response['signature'])
 					throw new Exception("Invalid signature");
 
-				if (($response['type'] != 'PURCHASE' && $response['type'] != 'EPAYMENT') || $response['state'] != 'APPROVED') {
+				if (($response['type'] != 'PURCHASE' && $response['type'] != 'PURCHASE_BY_QR' && $response['type'] != 'AUTHORIZE') || $response['state'] != 'APPROVED') {
 					sleep(2);
 					continue;
 				}
